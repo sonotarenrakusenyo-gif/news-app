@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 今日のマイニュース
 
-## Getting Started
+選んだXアカウントの最新投稿を自動取得し、Geminiで小学生向けの解説を付けて、ジャンル別に表示する個人用ニュースアプリです。
 
-First, run the development server:
+## 機能
+
+- ジャンル登録（AI / 政治 / 経済 など）
+- 各ジャンルにXアカウントを追加
+- 1日4回の自動取得（8時・12時・18時・22時）
+- 小学生向けのやさしい解説を自動生成
+- 「今日のマイニュース」画面でジャンル別に閲覧
+- Vercel + GitHub でデプロイ、スマホのホーム画面に追加可能
+
+## データ取得について
+
+X APIは使わず、**FxTwitter API**（無料・APIキー不要）で投稿を取得します。  
+個人利用・8アカウント程度なら、追加料金なしで運用できます。
+
+## セットアップ
+
+### 1. 依存関係のインストール
+
+```bash
+cd my-news-app
+npm install
+```
+
+### 2. 環境変数
+
+`.env.local` を作成します。
+
+```bash
+cp .env.example .env.local
+```
+
+| 変数名 | 説明 |
+|--------|------|
+| `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey) で取得 |
+| `CRON_SECRET` | Cron認証用のランダム文字列（本番必須） |
+
+### 3. フォローするアカウントを設定
+
+`src/lib/sources.ts` を編集して、ジャンルとXアカウント（@なし）を設定します。
+
+```typescript
+export const genres: Genre[] = [
+  {
+    id: "ai",
+    name: "AI",
+    accounts: ["ylecun", "sama"],
+  },
+  // ...
+];
+```
+
+### 4. ローカルで起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで `http://localhost:3000` を開き、「今すぐ更新」で新着を取得できます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Vercel へのデプロイ
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. GitHub に push
 
-## Learn More
+```bash
+git remote add origin https://github.com/<ユーザー名>/my-news-app.git
+git push -u origin main
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Vercel に接続
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. [vercel.com](https://vercel.com) で **Add New → Project**
+2. GitHub リポジトリを Import
+3. **Environment Variables** に以下を追加:
+   - `GEMINI_API_KEY`
+   - `CRON_SECRET`
+4. **Storage → Blob** を有効化（本番のデータ保存用）
+5. Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Blob を有効にすると `BLOB_READ_WRITE_TOKEN` が自動設定され、取得したニュースが永続化されます。
 
-## Deploy on Vercel
+### 3. Cron の確認
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`vercel.json` で1日4回の自動取得が設定済みです。  
+Vercel ダッシュボードの **Cron Jobs** タブで実行状況を確認できます。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## スマホのホーム画面に追加
+
+1. Vercel の URL をスマホのブラウザで開く
+2. **共有 → ホーム画面に追加**（iPhone）
+3. アプリのように起動できます
+
+## 手動で新着を取得
+
+画面上の「今すぐ更新」ボタン、または API を直接叩きます。
+
+```bash
+curl -X POST http://localhost:3000/api/fetch
+```
+
+## 将来 X API に切り替える場合
+
+`src/lib/fetcher.ts` を差し替えるだけで、UI や Gemini 処理はそのまま使えます。
+
+## 技術スタック
+
+- Next.js 16 (App Router)
+- Tailwind CSS
+- Gemini API（要約）
+- FxTwitter API（投稿取得・無料）
+- Vercel Blob（本番ストレージ）
+- Vercel Cron（定期実行）
