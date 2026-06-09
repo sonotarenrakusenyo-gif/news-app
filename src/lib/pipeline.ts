@@ -5,11 +5,10 @@ import { loadStore, saveStore } from "./storage";
 import type { FetchResult, FxTweet, NewsItem } from "./types";
 
 function buildFallbackSummary(tweet: FxTweet): string {
-  const text = tweet.text.replace(/\s+/g, " ").trim();
-  const shortText = text.length > 90 ? `${text.slice(0, 90)}...` : text;
-  const authorName = tweet.author?.name ?? tweet.author?.screen_name ?? "このアカウント";
+  const authorName =
+    tweet.author?.name ?? tweet.author?.screen_name ?? "このアカウント";
 
-  return `${authorName}さんの投稿の要点は、「${shortText}」という内容です。くわしい言葉づかいは、上の元投稿を見て確認してください。`;
+  return `${authorName}さんの投稿は取得できましたが、AI要約は一時的に作れませんでした。少し時間を置いて更新すると、やさしい要点に置き換わります。`;
 }
 
 function toNewsItem(
