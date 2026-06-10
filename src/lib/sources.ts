@@ -20,12 +20,14 @@ export const genres: Genre[] = [
     name: "政治",
     accounts: [
       "takaichi_sanae", // 高市早苗
+      "nikkeiseijibu", // 日本経済新聞 政治・外交
     ],
   },
   {
     id: "economy",
     name: "経済",
     accounts: [
+      "nikkei", // 日本経済新聞 電子版
       "nikkei_bizdaily", // 日経ビジネス
       "afpbbcom", // AFPBB News
       "ReutersJapan", // ロイター日本

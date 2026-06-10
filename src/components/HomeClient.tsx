@@ -79,7 +79,7 @@ export function HomeClient({ genres, items }: HomeClientProps) {
   }, [activeGenre, selectedDateItems]);
 
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div id="page-top" className="min-h-screen scroll-smooth bg-zinc-50">
       <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4">
           <div>

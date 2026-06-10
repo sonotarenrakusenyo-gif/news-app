@@ -38,7 +38,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
         <p className="text-base leading-7 text-zinc-900">{item.summary}</p>
       </div>
 
-      <div className="flex items-center justify-between text-xs text-zinc-500">
+      <div className="mb-4 flex items-center justify-between text-xs text-zinc-500">
         <time dateTime={item.postedAt}>{formatTime(item.postedAt)}</time>
         <a
           href={item.url}
@@ -49,6 +49,13 @@ export function NewsCard({ item }: { item: NewsItem }) {
           Xで見る →
         </a>
       </div>
+
+      <a
+        href="#page-top"
+        className="block rounded-full border border-zinc-200 bg-white px-4 py-2 text-center text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
+      >
+        ページ上部へ戻る ↑
+      </a>
     </article>
   );
 }
