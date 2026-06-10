@@ -1,5 +1,14 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isRateLimitError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return message.includes("429") || message.includes("Too Many Requests");
+}
+
 export async function summarizeForKids(
   handle: string,
   authorName: string,
@@ -27,12 +36,30 @@ export async function summarizeForKids(
 投稿内容:
 ${text}`;
 
-  const result = await model.generateContent(prompt);
-  const summary = result.response.text().trim();
+  let lastError: unknown;
 
-  if (!summary) {
-    throw new Error("Gemini returned an empty summary");
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const result = await model.generateContent(prompt);
+      const summary = result.response.text().trim();
+
+      if (!summary) {
+        throw new Error("Gemini returned an empty summary");
+      }
+
+      return summary;
+    } catch (error) {
+      lastError = error;
+
+      if (!isRateLimitError(error) || attempt === 2) {
+        break;
+      }
+
+      await sleep(15000 * (attempt + 1));
+    }
   }
 
-  return summary;
+  throw lastError instanceof Error
+    ? lastError
+    : new Error("Gemini summary failed");
 }

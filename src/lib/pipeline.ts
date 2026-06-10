@@ -4,6 +4,10 @@ import { getAllAccounts } from "./sources";
 import { loadStore, saveStore } from "./storage";
 import type { FetchResult, FxTweet, NewsItem } from "./types";
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function buildFallbackSummary(tweet: FxTweet): string {
   const authorName =
     tweet.author?.name ?? tweet.author?.screen_name ?? "このアカウント";
@@ -67,6 +71,7 @@ export async function runFetchPipeline(): Promise<{
             tweet.author?.name ?? handle,
             tweet.text,
           );
+          await sleep(2500);
         } catch (error) {
           console.error(`Gemini summary failed for ${tweet.id}:`, error);
           summary = buildFallbackSummary(tweet);

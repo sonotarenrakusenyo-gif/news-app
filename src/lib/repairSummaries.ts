@@ -11,6 +11,10 @@ function needsSummaryRepair(summary: string): boolean {
   return REPAIR_PATTERNS.some((pattern) => summary.includes(pattern));
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export async function repairWeakSummaries(limit = 6): Promise<{
   repaired: number;
   remaining: number;
@@ -32,6 +36,7 @@ export async function repairWeakSummaries(limit = 6): Promise<{
       );
       repaired += 1;
       await saveStore(store);
+      await sleep(2500);
     } catch (error) {
       console.error(`Summary repair failed for ${item.id}:`, error);
     }
