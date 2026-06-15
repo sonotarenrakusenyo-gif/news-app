@@ -27,9 +27,9 @@ export const genres: Genre[] = [
     id: "economy",
     name: "経済",
     accounts: [
-      "nikkei", // 日本経済新聞 電子版
+      "nikkei_keizai", // 日経 経済
+      "goto_finance", // 後藤達也
       "nikkei_bizdaily", // 日経ビジネス
-      "afpbbcom", // AFPBB News
       "ReutersJapan", // ロイター日本
     ],
   },
