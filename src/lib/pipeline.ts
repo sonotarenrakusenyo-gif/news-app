@@ -1,6 +1,6 @@
 import { fetchUserStatuses } from "./fetcher";
 import { summarizeForKids } from "./gemini";
-import { getAllAccounts } from "./sources";
+import { getAllAccounts, normalizeHandle } from "./sources";
 import { loadStore, saveStore } from "./storage";
 import type { FetchResult, FxTweet, NewsItem } from "./types";
 
@@ -45,8 +45,19 @@ export async function runFetchPipeline(): Promise<{
   totalNew: number;
 }> {
   const store = await loadStore();
-  const existingIds = new Set(store.items.map((item) => item.id));
   const accounts = getAllAccounts();
+  const accountHandles = new Set(accounts.map((account) => account.handle));
+
+  store.items = store.items.filter((item) =>
+    accountHandles.has(normalizeHandle(item.handle)),
+  );
+  store.lastFetchedAt = Object.fromEntries(
+    Object.entries(store.lastFetchedAt).filter(([handle]) =>
+      accountHandles.has(normalizeHandle(handle)),
+    ),
+  );
+
+  const existingIds = new Set(store.items.map((item) => item.id));
   const results: FetchResult[] = [];
   let totalNew = 0;
 

@@ -30,10 +30,14 @@ export const genres: Genre[] = [
       "nikkei_keizai", // 日経 経済
       "goto_finance", // 後藤達也
       "nikkei_bizdaily", // 日経ビジネス
-      "ReutersJapan", // ロイター日本
+      "BreakingNews", // Breaking News
     ],
   },
 ];
+
+export function normalizeHandle(handle: string): string {
+  return handle.replace(/^@/, "").toLowerCase();
+}
 
 export function getAllAccounts(): Array<{
   handle: string;
@@ -42,9 +46,13 @@ export function getAllAccounts(): Array<{
 }> {
   return genres.flatMap((genre) =>
     genre.accounts.map((handle) => ({
-      handle: handle.replace(/^@/, "").toLowerCase(),
+      handle: normalizeHandle(handle),
       genreId: genre.id,
       genreName: genre.name,
     })),
   );
+}
+
+export function getRegisteredAccountHandles(): Set<string> {
+  return new Set(getAllAccounts().map((account) => account.handle));
 }
