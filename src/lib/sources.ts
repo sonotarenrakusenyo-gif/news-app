@@ -13,6 +13,7 @@ export const genres: Genre[] = [
       "masahirochaen", // チャエン（デジライズ CEO）
       "shota7180", // 木内翔大（SHIFT AI 代表）
       "ImAI_Eruel", // 今井翔太（AI研究者・GenesisAI）
+      "Shiba_program", // くるしば（Udemyプログラミング講師）
     ],
   },
   {
