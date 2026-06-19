@@ -20,6 +20,7 @@ export interface NewsItem {
 export interface NewsStore {
   items: NewsItem[];
   lastFetchedAt: Record<string, number>;
+  lastUpdatedAt?: string;
 }
 
 export interface FxTweet {
