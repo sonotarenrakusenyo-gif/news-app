@@ -74,6 +74,22 @@ export function sortNewsItems(items: NewsItem[]): NewsItem[] {
   );
 }
 
+export function getLastUpdatedAt(store: NewsStore): string | null {
+  if (store.lastUpdatedAt) {
+    return store.lastUpdatedAt;
+  }
+
+  if (store.items.length === 0) {
+    return null;
+  }
+
+  return store.items.reduce((latest, item) => {
+    return new Date(item.fetchedAt).getTime() > new Date(latest).getTime()
+      ? item.fetchedAt
+      : latest;
+  }, store.items[0].fetchedAt);
+}
+
 export function getTodaysItems(items: NewsItem[]): NewsItem[] {
   const today = new Date();
   today.setHours(0, 0, 0, 0);

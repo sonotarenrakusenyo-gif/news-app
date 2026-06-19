@@ -4,7 +4,7 @@ import {
   getRegisteredAccountHandles,
   normalizeHandle,
 } from "@/lib/sources";
-import { loadStore, sortNewsItems } from "@/lib/storage";
+import { getLastUpdatedAt, loadStore, sortNewsItems } from "@/lib/storage";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +14,9 @@ export default async function Home() {
   const items = sortNewsItems(store.items).filter((item) =>
     registeredHandles.has(normalizeHandle(item.handle)),
   );
+  const lastUpdatedAt = getLastUpdatedAt(store);
 
-  return <HomeClient genres={genres} items={items} />;
+  return (
+    <HomeClient genres={genres} items={items} lastUpdatedAt={lastUpdatedAt} />
+  );
 }

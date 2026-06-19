@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { GenreTabs } from "@/components/GenreTabs";
+import { LastUpdatedLabel } from "@/components/LastUpdatedLabel";
 import { NewsCard } from "@/components/NewsCard";
 import { RefreshButton } from "@/components/RefreshButton";
 import type { Genre, NewsItem } from "@/lib/types";
@@ -9,6 +10,7 @@ import type { Genre, NewsItem } from "@/lib/types";
 interface HomeClientProps {
   genres: Genre[];
   items: NewsItem[];
+  lastUpdatedAt: string | null;
 }
 
 function getDateKey(iso: string): string {
@@ -49,7 +51,7 @@ function formatShortDateLabel(dateKey: string): string {
   }).format(new Date(`${dateKey}T00:00:00`));
 }
 
-export function HomeClient({ genres, items }: HomeClientProps) {
+export function HomeClient({ genres, items, lastUpdatedAt }: HomeClientProps) {
   const [selectedDate, setSelectedDate] = useState(() =>
     items[0] ? getDateKey(items[0].postedAt) : getDateKey(new Date().toISOString()),
   );
@@ -89,7 +91,10 @@ export function HomeClient({ genres, items }: HomeClientProps) {
             <h1 className="text-2xl font-bold text-zinc-900">今日のマイニュース</h1>
             <p className="text-sm text-zinc-500">{formatDateLabel(selectedDate)}</p>
           </div>
-          <RefreshButton />
+          <div className="flex flex-col items-end gap-2">
+            <RefreshButton />
+            <LastUpdatedLabel lastUpdatedAt={lastUpdatedAt} />
+          </div>
         </div>
       </header>
 

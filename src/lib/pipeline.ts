@@ -120,6 +120,7 @@ export async function runFetchPipeline(): Promise<{
   }
 
   store.items = store.items.slice(0, 500);
+  store.lastUpdatedAt = new Date().toISOString();
   await saveStore(store);
 
   return { results, totalNew };
